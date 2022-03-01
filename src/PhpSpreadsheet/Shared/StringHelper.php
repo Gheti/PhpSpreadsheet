@@ -444,11 +444,15 @@ class StringHelper
      */
     public static function convertEncoding($textValue, $to, $from)
     {
-        if (self::getIsIconvEnabled()) {
-            $result = iconv($from, $to . self::$iconvOptions, $textValue);
-            if (false !== $result) {
-                return $result;
+        try {
+            if (self::getIsIconvEnabled()) {
+                $result = iconv($from, $to . self::$iconvOptions, $textValue);
+                if (false !== $result) {
+                    return $result;
+                }
             }
+        } catch (\Exception $e) {
+            return mb_convert_encoding($textValue, $to, $from);
         }
 
         return mb_convert_encoding($textValue, $to, $from);
